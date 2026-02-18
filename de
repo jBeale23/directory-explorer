@@ -123,5 +123,15 @@ function pop-directory() {
 	fi
 }
 
+# If there are directories on the stack, empty it.
+function purge-directory-stack() {
+	if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
+		declare -i STACK_SIZE
+		STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
+		[ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 0; }
+		echo "Purging $STACK_SIZE directories from the stack."
+		rm "${USER_DIRSTACK:-$HOME/.dirstack}"
+	fi
+}
 
 # vim: set filetype=bash:
