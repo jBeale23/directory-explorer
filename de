@@ -23,4 +23,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE                  #
 # SOFTWARE.                                                                                      #
 # ---------------------------------------------------------------------------------------------- #
+
+function usage() {
+	cat <<EOF
+Adds directory stacking, ls after cd, and fuzzy finding behavior to CD.
+
+Usage: $(basename "$0") [-L/-P] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+]
+
+Options:
+	-h, --help			Show this help message and exit.
+	    --version			Show version information and exit.
+	-l, --list-directories		List the current directory stack.
+	-s, --stack-directory		Add the current directory to the top of the directory stack.
+	-p, --pop-directory		Pop the specified directory from the directory stack and change to it.
+	    --purge-directory-stack		Empty the current directory stack.
+  -L			Resolve symlinks during traversal after processing .. in path (Default Behavior).
+	-P			Prevents following symlinks after processing .. in path.
+	-e			Return a non-zero status if working directory resolution fails with -P enabled.
+EOF
+}
+
+function version() {
+	cat <<EOF
+Directory Explorer 0.1.0
+Copyright © 2026 Josh Beale <jbeale2023@gmail.com>.
+Licence MIT: <https://directory.fsf.org/wiki/License:Expat>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+EOF
+}
 # vim: set filetype=bash:
