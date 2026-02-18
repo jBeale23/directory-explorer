@@ -28,7 +28,7 @@ function usage() {
 	cat <<EOF
 Adds directory stacking, ls after cd, and fuzzy finding behavior to cd.
 
-Usage: $(basename "$0") [-L/-P] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+]
+Usage: $(basename "$0") [-L/-P [-e]] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+] [PATH]
 
 Options:
 	-h, --help			Show this help message and exit.
