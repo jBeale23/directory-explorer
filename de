@@ -52,4 +52,18 @@ This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 EOF
 }
+
+# If there are directories on the stack, list them, one per line, with added line numbers.
+# If there are more than $STACK_DISPLAY_LIMIT directories in the stack, truncate the output.
+function list-directories() {
+	if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
+		declare -i STACK_SIZE
+		STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
+		[ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 0; }
+		echo "There are currently $STACK_SIZE directories on the stack."
+		tac "${USER_DIRSTACK:-$HOME/.dirstack}" | head -n "${STACK_DISPLAY_LIMIT:-5}" | cat -n
+	else
+		echo "The directory stack is empty." && return 0
+	fi
+}
 # vim: set filetype=bash:
