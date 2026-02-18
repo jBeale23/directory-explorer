@@ -24,6 +24,19 @@
 # SOFTWARE.                                                                                      #
 # ---------------------------------------------------------------------------------------------- #
 
+# ---------------------------- #
+# User Configuration Variables #
+# ---------------------------- #
+
+declare -r USER_DIRSTACK="$HOME/.dirstack"
+declare -ir STACK_DISPLAY_LIMIT="5"
+declare -r LS_AFTER_CD=true
+declare -r FUZZY_SEARCH_WHEN_BLANK=true
+
+# --------------------- #
+# End of user variables #
+# --------------------- #
+
 function usage() {
 	cat <<EOF
 Adds directory stacking, ls after cd, and fuzzy finding behavior to cd.
