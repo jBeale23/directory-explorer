@@ -139,7 +139,7 @@ function _de_directory-explorer() {
   declare -r TARGET_PATH="${cdopts[${#cdopts[@]} - 1]}"
   if [ "$TARGET_PATH" == "--" ]; then
     if [ "${_de_FUZZY_SEARCH_WHEN_BLANK:-true}" ]; then
-      local DIR
+      declare DIR
       DIR=$(find / -type d 2>/dev/null | fzf --preview 'tree {}')
       if [ -n "$DIR" ]; then
         cdopts+=("$DIR")
