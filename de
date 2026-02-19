@@ -67,14 +67,14 @@ EOF
 }
 
 # If there are directories on the stack, list them, one per line, with added line numbers.
-# If there are more than $STACK_DISPLAY_LIMIT directories in the stack, truncate the output.
+# If there are more than $_de_STACK_DISPLAY_LIMIT directories in the stack, truncate the output.
 function _de_list-directories() {
-  if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
+  if [ -f "${_de_USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
-    STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
+    STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
     [ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 0; }
     echo "There are currently $STACK_SIZE directories on the stack."
-    tac "${USER_DIRSTACK:-$HOME/.dirstack}" | head -n "${STACK_DISPLAY_LIMIT:-5}" | cat -n
+    tac "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | head -n "${_de_STACK_DISPLAY_LIMIT:-5}" | cat -n
   else
     echo "The directory stack is empty." && return 0
   fi
@@ -83,10 +83,10 @@ function _de_list-directories() {
 # Add a directory to the stack.
 # Defaults to $PWD if no directory is provided.
 function _de_stack-directory() {
-  realpath "${1:-"$PWD"}" >>"${USER_DIRSTACK:-$HOME/.dirstack}"
+  realpath "${1:-"$PWD"}" >>"${_de_USER_DIRSTACK:-$HOME/.dirstack}"
   echo "Added ${1:-"$PWD"} to the stack."
   declare -i STACK_SIZE
-  STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
+  STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
   (("STACK_SIZE" == 1)) && { echo "There is currently 1 directory on the stack." && return 0; }
   echo "There are currently $STACK_SIZE directories on the stack." && return 0
 }
@@ -99,13 +99,13 @@ function _de_pop-directory() {
   else
     declare -ir DIRNUM="1"
   fi
-  if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
+  if [ -f "${_de_USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
-    STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
+    STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
     [ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 1; }
     [ "$DIRNUM" -gt "$STACK_SIZE" ] && { echo "Invalid stack index $DIRNUM" && return 1; }
     local STACK_TOP
-    STACK_TOP=$(sed -i -e "$DIRNUM w /dev/stdout" -e "$DIRNUM d" "${USER_DIRSTACK:-$HOME/.dirstack}")
+    STACK_TOP=$(sed -i -e "$DIRNUM w /dev/stdout" -e "$DIRNUM d" "${_de_USER_DIRSTACK:-$HOME/.dirstack}")
     cdopts+=("$STACK_TOP") &&
       echo "Popped $STACK_TOP from the stack." && {
       if (("$STACK_SIZE" >= 3)); then
@@ -124,21 +124,21 @@ function _de_pop-directory() {
 
 # If there are directories on the stack, empty it.
 function _de_purge-directory-stack() {
-  if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
+  if [ -f "${_de_USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
-    STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
+    STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
     [ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 0; }
     echo "Purging $STACK_SIZE directories from the stack."
-    rm "${USER_DIRSTACK:-$HOME/.dirstack}"
+    rm "${_de_USER_DIRSTACK:-$HOME/.dirstack}"
   fi
 }
 
 # Main function for changing to a given target path.
-# If FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
+# If $_de_FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
 function _de_directory-explorer() {
   declare -r TARGET_PATH="${cdopts[${#cdopts[@]} - 1]}"
   if [ "$TARGET_PATH" == "--" ]; then
-    if [ "${FUZZY_SEARCH_WHEN_BLANK:-true}" ]; then
+    if [ "${_de_FUZZY_SEARCH_WHEN_BLANK:-true}" ]; then
       local DIR
       DIR=$(find / -type d 2>/dev/null | fzf --preview 'tree {}')
       if [ -n "$DIR" ]; then
@@ -152,7 +152,7 @@ function _de_directory-explorer() {
     [ -f "$TARGET_PATH" ] && { echo "$TARGET_PATH is a file." && return 1; }
   fi
   builtin cd "${cdopts[@]}" || return 1
-  [ "$LS_AFTER_CD" ] && ls
+  [ "$_de_LS_AFTER_CD" ] && ls
 }
 
 # vim: set filetype=bash:
