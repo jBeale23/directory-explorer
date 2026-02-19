@@ -152,7 +152,7 @@ function _de_directory-explorer() {
     [ -f "$TARGET_PATH" ] && { echo "$TARGET_PATH is a file." && return 1; }
   fi
   builtin cd "${cdopts[@]}" || return 1
-  [ "$_de_LS_AFTER_CD" ] && ls
+  [ "${_de_LS_AFTER_CD:-true}" ] && ls
 }
 
 function de() {
