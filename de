@@ -162,7 +162,7 @@ function de() {
 ${FUNCNAME[0]}: error during argument parsing.
 Do you have GNU getopt?
 EOF
-    exit 1
+    return 1
   fi
 
   eval set -- "$OPTS"
@@ -171,15 +171,15 @@ EOF
     case "$1" in
     -h | --help)
       _de_usage
-      exit "$?"
+      return "$?"
       ;;
     -v | --version)
       _de_version
-      exit "$?"
+      return "$?"
       ;;
     -l | --list-directories)
       _de_list-directories
-      exit "$?"
+      return "$?"
       ;;
     -s | --stack-directory)
       if [ -d "$2" ]; then
@@ -187,7 +187,7 @@ EOF
       else
         _de_stack-directory
       fi
-      exit "$?"
+      return "$?"
       ;;
     -p | --pop-directory)
       if [[ $2 =~ [0-9]+ ]]; then
@@ -195,11 +195,11 @@ EOF
       else
         _de_pop-directory
       fi
-      exit "$?"
+      return "$?"
       ;;
     --purge-directory-stack)
       _de_purge-directory-stack
-      exit "$?"
+      return "$?"
       ;;
     -[LPe])
       cdopts+=("$1")
@@ -214,18 +214,18 @@ EOF
 ${FUNCNAME[0]}: invalid option -- '${1}'
 Try '${FUNCNAME[0]}' --help' for more information.
 EOF
-      exit 1
+      return 1
       ;;
     esac
   done
 
-  if [ "$#" -ne 1 ]; then
-    echo "${FUNCNAME[0]}: Too many target paths provided." && exit 1
+  if [ "$#" -gt 1 ]; then
+    echo "${FUNCNAME[0]}: Too many target paths provided." && return 1
   fi
   cdopts+=("--")
-  cdopts+=("$1")
+  [ -n "$1" ] && cdopts+=("$1")
   _de_directory-explorer
-  exit "$?"
+  return "$?"
 }
 
 # vim: set filetype=bash:
