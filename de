@@ -107,7 +107,6 @@ function _de_pop-directory() {
     local STACK_TOP
     STACK_TOP=$(sed -i -e "$DIRNUM w /dev/stdout" -e "$DIRNUM d" "${USER_DIRSTACK:-$HOME/.dirstack}")
     cdopts+=("$STACK_TOP") &&
-      builtin cd "${cdopts[@]}" &&
       echo "Popped $STACK_TOP from the stack." && {
       if (("$STACK_SIZE" >= 3)); then
         echo "There are currently $((--STACK_SIZE)) directories on the stack."
@@ -116,7 +115,7 @@ function _de_pop-directory() {
       else
         echo "The directory stack is empty."
       fi
-      [ "$LS_AFTER_CD" ] && ls
+      _de_directory-explorer
     } || return 1
   else
     { echo "The directory stack is empty." && return 1; }
