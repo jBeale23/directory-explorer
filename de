@@ -104,15 +104,16 @@ function _de_stack-directory() {
 # Optionally, instead select the directory specified by user numerical input.
 function _de_pop-directory() {
   if [[ $1 =~ [0-9]+ ]]; then
-    declare -ir DIRNUM="$1"
+    declare -i DIRNUM="$1"
   else
-    declare -ir DIRNUM="1"
+    declare -i DIRNUM="1"
   fi
   if [ -f "${_de_USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
     STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
     [ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 1; }
     [ "$DIRNUM" -gt "$STACK_SIZE" ] && { echo "Invalid stack index $DIRNUM" && return 1; }
+    DIRNUM=$((STACK_SIZE + 1 - DIRNUM))
     local STACK_TOP
     STACK_TOP=$(sed -i -e "$DIRNUM w /dev/stdout" -e "$DIRNUM d" "${_de_USER_DIRSTACK:-$HOME/.dirstack}")
     cdopts+=("$STACK_TOP") &&
