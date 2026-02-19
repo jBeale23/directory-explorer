@@ -75,7 +75,14 @@ function _de_list-directories() {
     declare -i STACK_SIZE
     STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
     [ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 0; }
-    echo "There are currently $STACK_SIZE directories on the stack."
+    case "$STACK_SIZE" in
+    1)
+      echo "There is currently $STACK_SIZE directory on the stack."
+      ;;
+    *)
+      echo "There are currently $STACK_SIZE directories on the stack."
+      ;;
+    esac
     tac "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | head -n "${_de_STACK_DISPLAY_LIMIT:-5}" | cat -n
   else
     echo "The directory stack is empty." && return 0
