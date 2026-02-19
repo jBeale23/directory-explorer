@@ -134,4 +134,26 @@ function _de_purge-directory-stack() {
   fi
 }
 
+# Main function for changing to a given target path.
+# If FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
+function _de_directory-explorer() {
+  declare -r TARGET_PATH="${cdopts[${#cdopts[@]} - 1]}"
+  if [ "$TARGET_PATH" == "--" ]; then
+    if [ "${FUZZY_SEARCH_WHEN_BLANK:-true}" ]; then
+      local DIR
+      DIR=$(find / -type d 2>/dev/null | fzf --preview 'tree {}')
+      if [ -n "$DIR" ]; then
+        cdopts+=("$DIR")
+      fi
+    else
+      cdopts+=("$HOME")
+    fi
+  fi
+  if [ "$TARGET_PATH" != "--" ]; then
+    [ -f "$TARGET_PATH" ] && { echo "$TARGET_PATH is a file." && return 1; }
+  fi
+  builtin cd "${cdopts[@]}" || return 1
+  [ "$LS_AFTER_CD" ] && ls
+}
+
 # vim: set filetype=bash:
