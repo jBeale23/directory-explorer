@@ -28,10 +28,10 @@
 # User Configuration Variables #
 # ---------------------------- #
 
-declare -r _de_USER_DIRSTACK="$HOME/.dirstack"
-declare -ir _de_STACK_DISPLAY_LIMIT="5"
-declare -r _de_LS_AFTER_CD=true
-declare -r _de_FUZZY_SEARCH_WHEN_BLANK=true
+declare _de_USER_DIRSTACK="$HOME/.dirstack"
+declare -i _de_STACK_DISPLAY_LIMIT="5"
+declare _de_LS_AFTER_CD=true
+declare _de_FUZZY_SEARCH_WHEN_BLANK=true
 
 # --------------------- #
 # End of user variables #
