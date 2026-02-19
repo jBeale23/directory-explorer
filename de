@@ -28,16 +28,16 @@
 # User Configuration Variables #
 # ---------------------------- #
 
-declare -r USER_DIRSTACK="$HOME/.dirstack"
-declare -ir STACK_DISPLAY_LIMIT="5"
-declare -r LS_AFTER_CD=true
-declare -r FUZZY_SEARCH_WHEN_BLANK=true
+declare -r _de_USER_DIRSTACK="$HOME/.dirstack"
+declare -ir _de_STACK_DISPLAY_LIMIT="5"
+declare -r _de_LS_AFTER_CD=true
+declare -r _de_FUZZY_SEARCH_WHEN_BLANK=true
 
 # --------------------- #
 # End of user variables #
 # --------------------- #
 
-function usage() {
+function _de_usage() {
   cat <<EOF
 Adds directory stacking, ls after cd, and fuzzy finding behavior to cd.
 
@@ -56,7 +56,7 @@ Options:
 EOF
 }
 
-function version() {
+function _de_version() {
   cat <<EOF
 Directory Explorer 0.1.0
 Copyright © 2026 Josh Beale <jbeale2023@gmail.com>.
@@ -68,7 +68,7 @@ EOF
 
 # If there are directories on the stack, list them, one per line, with added line numbers.
 # If there are more than $STACK_DISPLAY_LIMIT directories in the stack, truncate the output.
-function list-directories() {
+function _de_list-directories() {
   if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
     STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
@@ -82,7 +82,7 @@ function list-directories() {
 
 # Add a directory to the stack.
 # Defaults to $PWD if no directory is provided.
-function stack-directory() {
+function _de_stack-directory() {
   if [ "$#" -eq 0 ]; then
     realpath "$PWD" >>"${USER_DIRSTACK:-$HOME/.dirstack}"
   else
@@ -96,7 +96,7 @@ function stack-directory() {
 
 # If there is a directory on top of the stack, pop it and change to it.
 # Optionally, instead select the directory specified by user numerical input.
-function pop-directory() {
+function _de_pop-directory() {
   if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
     STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
@@ -137,7 +137,7 @@ function pop-directory() {
 }
 
 # If there are directories on the stack, empty it.
-function purge-directory-stack() {
+function _de_purge-directory-stack() {
   if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
     STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
