@@ -136,7 +136,7 @@ function _de_purge-directory-stack() {
 # Main function for changing to a given target path.
 # If $_de_FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
 function _de_directory-explorer() {
-  declare -r TARGET_PATH="${cdopts[${#cdopts[@]} - 1]}"
+  declare -r TARGET_PATH="${cdopts[-1]}"
   if [ "$TARGET_PATH" == "--" ]; then
     if [ "${_de_FUZZY_SEARCH_WHEN_BLANK:-true}" ]; then
       declare DIR
