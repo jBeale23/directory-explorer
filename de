@@ -83,11 +83,7 @@ function _de_list-directories() {
 # Add a directory to the stack.
 # Defaults to $PWD if no directory is provided.
 function _de_stack-directory() {
-  if [ "$#" -eq 0 ]; then
-    realpath "$PWD" >>"${USER_DIRSTACK:-$HOME/.dirstack}"
-  else
-    realpath "$1" >>"${USER_DIRSTACK:-$HOME/.dirstack}"
-  fi
+  realpath "${1:-"$PWD"}" >>"${USER_DIRSTACK:-$HOME/.dirstack}"
   declare -i STACK_SIZE
   STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
   (("STACK_SIZE" == 1)) && { echo "There is currently 1 directory on the stack." && return 0; }
