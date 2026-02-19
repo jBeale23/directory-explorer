@@ -155,4 +155,77 @@ function _de_directory-explorer() {
   [ "$_de_LS_AFTER_CD" ] && ls
 }
 
+function de() {
+  declare -a cdopts
+  if ! OPTS=$(getopt -o hvls::p::LPe --long help,version,list-directories,stack-directory::,pop-directory::,purge-directory-stack -- "$@"); then
+    cat <<EOF
+${FUNCNAME[0]}: error during argument parsing.
+Do you have GNU getopt?
+EOF
+    exit 1
+  fi
+
+  eval set -- "$OPTS"
+
+  while true; do
+    case "$1" in
+    -h | --help)
+      _de_usage
+      exit "$?"
+      ;;
+    -v | --version)
+      _de_version
+      exit "$?"
+      ;;
+    -l | --list-directories)
+      _de_list-directories
+      exit "$?"
+      ;;
+    -s | --stack-directory)
+      if [ -d "$2" ]; then
+        _de_stack-directory "$2"
+      else
+        _de_stack-directory
+      fi
+      exit "$?"
+      ;;
+    -p | --pop-directory)
+      if [[ $2 =~ [0-9]+ ]]; then
+        _de_pop-directory "$2"
+      else
+        _de_pop-directory
+      fi
+      exit "$?"
+      ;;
+    --purge-directory-stack)
+      _de_purge-directory-stack
+      exit "$?"
+      ;;
+    -[LPe])
+      cdopts+=("$1")
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      cat <<EOF
+${FUNCNAME[0]}: invalid option -- '${1}'
+Try '${FUNCNAME[0]}' --help' for more information.
+EOF
+      exit 1
+      ;;
+    esac
+  done
+
+  if [ "$#" -ne 1 ]; then
+    echo "${FUNCNAME[0]}: Too many target paths provided." && exit 1
+  fi
+  cdopts+=("--")
+  cdopts+=("$1")
+  _de_directory-explorer
+  exit "$?"
+}
+
 # vim: set filetype=bash:
