@@ -97,42 +97,32 @@ function _de_stack-directory() {
 # If there is a directory on top of the stack, pop it and change to it.
 # Optionally, instead select the directory specified by user numerical input.
 function _de_pop-directory() {
+  if [[ $1 =~ [0-9]+ ]]; then
+    declare -ir DIRNUM="$1"
+  else
+    declare -ir DIRNUM="1"
+  fi
   if [ -f "${USER_DIRSTACK:-$HOME/.dirstack}" ]; then
     declare -i STACK_SIZE
     STACK_SIZE=$(wc -l "${USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
     [ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 1; }
+    [ "$DIRNUM" -gt "$STACK_SIZE" ] && { echo "Invalid stack index $DIRNUM" && return 1; }
     local STACK_TOP
-    if [ "$#" -eq 0 ]; then
-      STACK_TOP=$(tail -n 1 "${USER_DIRSTACK:-$HOME/.dirstack}" | tee >(wc -c | xargs -I {} truncate "${USER_DIRSTACK:-$HOME/.dirstack}" -s -{})) &&
-        builtin cd "${cdopts[@]}" "$STACK_TOP" &&
-        echo "Popped $STACK_TOP from the stack." && {
-        if (("$STACK_SIZE" >= 3)); then
-          echo "There are currently $((--STACK_SIZE)) directories on the stack."
-        elif [[ "$STACK_SIZE" == 2 ]]; then
-          echo "There is currently $((--STACK_SIZE)) directory on the stack."
-        else
-          echo "The directory stack is empty."
-        fi
-        [ "$LS_AFTER_CD" ] && ls
-      } || return 1
-    else
-      [[ $1 =~ [0-9]+ ]] && declare -ir DIRNUM="$1"
-      { [[ ! $1 =~ [0-9]+ ]] || [[ "$DIRNUM" > "$STACK_SIZE" ]]; } && { echo "Invalid stack index $1" && return 1; }
-      STACK_TOP=$(sed -i -e "$DIRNUM w /dev/stdout" -e "$DIRNUM d" "${USER_DIRSTACK:-$HOME/.dirstack}")
-      builtin cd "${cdopts[@]}" "$STACK_TOP" &&
-        echo "Popped $STACK_TOP from the stack." && {
-        if (("$STACK_SIZE" >= 3)); then
-          echo "There are currently $((--STACK_SIZE)) directories on the stack."
-        elif [[ "$STACK_SIZE" == 2 ]]; then
-          echo "There is currently $((--STACK_SIZE)) directory on the stack."
-        else
-          echo "The directory stack is empty."
-        fi
-        [ "$LS_AFTER_CD" ] && ls
-      } || return 1
-    fi
+    STACK_TOP=$(sed -i -e "$DIRNUM w /dev/stdout" -e "$DIRNUM d" "${USER_DIRSTACK:-$HOME/.dirstack}")
+    cdopts+=("$STACK_TOP") &&
+      builtin cd "${cdopts[@]}" &&
+      echo "Popped $STACK_TOP from the stack." && {
+      if (("$STACK_SIZE" >= 3)); then
+        echo "There are currently $((--STACK_SIZE)) directories on the stack."
+      elif [[ "$STACK_SIZE" == 2 ]]; then
+        echo "There is currently $((--STACK_SIZE)) directory on the stack."
+      else
+        echo "The directory stack is empty."
+      fi
+      [ "$LS_AFTER_CD" ] && ls
+    } || return 1
   else
-    (echo "The directory stack is empty." && exit 1)
+    { echo "The directory stack is empty." && return 1; }
   fi
 }
 
