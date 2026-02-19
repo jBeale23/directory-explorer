@@ -51,10 +51,10 @@ Options:
 	-l, --list-directories		List the current directory stack.
 	-s, --stack-directory		Add the current directory to the top of the directory stack.
 	-p, --pop-directory		Pop the specified directory from the directory stack and change to it.
-	    --purge-directory-stack		Empty the current directory stack.
-  -L			Resolve symlinks during traversal after processing .. in path (Default Behavior).
-	-P			Prevents following symlinks after processing .. in path.
-	-e			Return a non-zero status if working directory resolution fails with -P enabled.
+	    --purge-directory-stack	Empty the current directory stack.
+	-L				Resolve symlinks during traversal after processing .. in path (Default Behavior).
+	-P				Prevents following symlinks after processing .. in path.
+	-e				Return a non-zero status if working directory resolution fails with -P enabled.
 EOF
 }
 
