@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck shell=bash
 # ---------------------------------------------------------------------------------------------- #
 # Directory Explorer: Adds directory stacking, ls after cd, and fuzzy finding behavior to cd.    #
 #                                                                                                #
