@@ -148,6 +148,15 @@ function _de_purge-directory-stack() {
   fi
 }
 
+# Parse bookmark into its components; bookmark and directory.
+function _de_parse_bookmark() {
+  local BOOKMARK DIRECTORY
+  BOOKMARK=${1%%=}
+  DIRECTORY=${1##=}
+  echo "$BOOKMARK"
+  echo "$DIRECTORY"
+}
+
 # Main function for changing to a given target path.
 # If $_de_FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
 function _de_directory-explorer() {
