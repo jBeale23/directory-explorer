@@ -4,7 +4,7 @@ A wrapper for cd that adds fuzzy finding, automatic file listing after changing 
 # Installation
 Place Directory Explorer in a convenient place, and then add the following to your `.bashrc` or a similar alternative:
 ```bash
-. /PATH/TO/YOUR/INSTALLATION/de
+. /PATH/TO/YOUR/INSTALLATION/directory-explorer.sh
 ```
 Directory Explorer is then available to call via `de`.
 
