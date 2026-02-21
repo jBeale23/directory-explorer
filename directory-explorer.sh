@@ -44,7 +44,7 @@ function _de_usage() {
   cat << EOF
 Adds directory stacking, ls after cd, and fuzzy finding behavior to cd.
 
-Usage: ${FUNCNAME[1]} [-L/-P [-e]] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+] [-m[=]<BOOKMARK>[DIRECTORY]/-u[=]<BOOKMARK>] [DIRECTORY]
+Usage: ${FUNCNAME[1]} [-L/-P [-e]] [-h] [-v] [-l] [-b] [-s[=][DIRECTORY]/-p[=][0-9]+] [-m[=]<BOOKMARK>[DIRECTORY]/-u[=]<BOOKMARK>] [DIRECTORY]
 
 Options:
 	-h, --help					Show this help message and exit.
@@ -55,6 +55,7 @@ Options:
 	    --purge-directory-stack			Empty the current directory stack.
 	-m, --mark-directory <BOOKMARK> [DIRECTORY]	Bookmark the current or specified directory.
 	-u, --unmark-directory <BOOKMARK> 		Bookmark the current or specified directory.
+	-b, --list-bookmarks				List the current bookmarks.
 	    --purge-bookmarks				Remove all bookmarks.
 	-L						Resolve symlinks during traversal after processing .. in path (Default Behavior).
 	-P						Prevents following symlinks after processing .. in path.
