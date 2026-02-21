@@ -28,10 +28,11 @@
 # ---------------------------- #
 
 # All of these values fall back to their defaults if left unset here.
-declare _de_USER_DIRSTACK="$HOME/.dirstack" # This can be located anywhere the user has write permissions.
-declare -i _de_STACK_DISPLAY_LIMIT="5"      # This can be any integer greater than or equal to 1.
-declare _de_LS_AFTER_CD=true                # This can be any boolean truthy or falsy value.
-declare _de_FUZZY_SEARCH_WHEN_BLANK=true    # This can be any boolean truthy or falsy value.
+declare _de_USER_DIRSTACK="$HOME/.dirstack"      # This can be located anywhere the user has write permissions.
+declare _de_USER_BOOKMARKS="$HOME/.de_bookmarks" # This can be located anywhere the user has write permissions.
+declare -i _de_STACK_DISPLAY_LIMIT="5"           # This can be any integer greater than or equal to 1.
+declare _de_LS_AFTER_CD=true                     # This can be any boolean truthy or falsy value.
+declare _de_FUZZY_SEARCH_WHEN_BLANK=true         # This can be any boolean truthy or falsy value.
 # Fuzzy searching requires fzf and tree as additional dependencies.
 
 # --------------------- #
