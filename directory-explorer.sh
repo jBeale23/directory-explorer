@@ -180,6 +180,36 @@ function _de_add_bookmark() {
   esac
 }
 
+# Remove a bookmark for a directory.
+function _de_remove_bookmark() {
+  [ -n "$1" ] || {
+    echo "${FUNCNAME[1]}: No bookmark provided."
+    return 1
+  }
+  if [ -f "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}" ]; then
+    declare -i NUM_BOOKMARKS
+    NUM_BOOKMARKS=$(wc -l "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}" | cut -f 1 -d " ")
+    if ((NUM_BOOKMARKS >= 1)); then
+      declare -a REMOVED_BOOKMARK
+      mapfile -t REMOVED_BOOKMARK < <(_de_parse_bookmark "$(sed -i -e "/$1=.*\n/w /dev/stdout" -e "/$1=.*\n/d" "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}")")
+      echo "Removed bookmark: ${REMOVED_BOOKMARK[0]} for ${REMOVED_BOOKMARK[1]}."
+      ((NUM_BOOKMARKS--))
+      case "$NUM_BOOKMARKS" in
+        0) echo "You currently have no bookmarks." ;;
+        1) echo "You currently have $NUM_BOOKMARKS" bookmark. ;;
+        *) echo "You currently have $NUM_BOOKMARKS bookmarks." ;;
+      esac
+      return 0
+    else
+      echo "You currently have no bookmarks."
+      return 1
+    fi
+  else
+    echo "You currently have no bookmarks."
+    return 1
+  fi
+}
+
 # Main function for changing to a given target path.
 # If $_de_FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
 function _de_directory-explorer() {
