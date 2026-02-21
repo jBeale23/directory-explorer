@@ -157,6 +157,29 @@ function _de_parse_bookmark() {
   echo "$DIRECTORY"
 }
 
+# Add a bookmark for a directory.
+# Defaults to $PWD if no directory is provided.
+# Doesn't clobber existing bookmarks unless _de_CLOBBER_BOOKMARKS is true.
+# TODO: Add logic around clobbering / not clobbering bookmarks.
+function _de_add_bookmark() {
+  [ -n "$1" ] || {
+    echo "${FUNCNAME[1]}: No bookmark provided."
+    return 1
+  }
+  [[ -d "${2:-"$PWD"}" ]] || {
+    echo "${FUNCNAME[1]}: ${2:-"$PWD"} is not a directory."
+    return 1
+  }
+  echo "$1=$(realpath "${2:-"$PWD"}")" >> "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}"
+  echo "Added Bookmark ${1:-"$PWD"} for ${2:-"$PWD"}."
+  declare -i NUM_BOOKMARKS
+  NUM_BOOKMARKS=$(wc -l "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}" | cut -f 1 -d " ")
+  case "$NUM_BOOKMARKS" in
+    1) echo "You currently have $NUM_BOOKMARKS" bookmark. ;;
+    *) echo "You currently have $NUM_BOOKMARKS bookmarks." ;;
+  esac
+}
+
 # Main function for changing to a given target path.
 # If $_de_FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
 function _de_directory-explorer() {
