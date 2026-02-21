@@ -43,18 +43,21 @@ function _de_usage() {
   cat << EOF
 Adds directory stacking, ls after cd, and fuzzy finding behavior to cd.
 
-Usage: ${FUNCNAME[1]} [-L/-P [-e]] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+] [DIRECTORY]
+Usage: ${FUNCNAME[1]} [-L/-P [-e]] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+] [-m[=]<BOOKMARK>[DIRECTORY]/-u[=]<BOOKMARK>] [DIRECTORY]
 
 Options:
-	-h, --help				Show this help message and exit.
-	    --version				Show version information and exit.
-	-l, --list-directories			List the current directory stack.
-	-s, --stack-directory [DIRECTORY]	Add the current or specified directory to the top of the directory stack.
-	-p, --pop-directory [0-9]+		Pop the top or specified directory from the directory stack and change to it.
-	    --purge-directory-stack		Empty the current directory stack.
-	-L					Resolve symlinks during traversal after processing .. in path (Default Behavior).
-	-P					Prevents following symlinks after processing .. in path.
-	-e					Return a non-zero status if working directory resolution fails with -P enabled.
+	-h, --help					Show this help message and exit.
+	    --version					Show version information and exit.
+	-l, --list-directories				List the current directory stack.
+	-s, --stack-directory [DIRECTORY]		Add the current or specified directory to the top of the directory stack.
+	-p, --pop-directory [0-9]+			Pop the top or specified directory from the directory stack and change to it.
+	    --purge-directory-stack			Empty the current directory stack.
+	-m, --mark-directory <BOOKMARK> [DIRECTORY]	Bookmark the current or specified directory.
+	-u, --unmark-directory <BOOKMARK> 		Bookmark the current or specified directory.
+	    --purge-bookmarks				Remove all bookmarks.
+	-L						Resolve symlinks during traversal after processing .. in path (Default Behavior).
+	-P						Prevents following symlinks after processing .. in path.
+	-e						Return a non-zero status if working directory resolution fails with -P enabled.
 EOF
 }
 
