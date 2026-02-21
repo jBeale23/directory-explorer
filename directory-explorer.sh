@@ -39,26 +39,26 @@ declare _de_FUZZY_SEARCH_WHEN_BLANK=true    # This can be any boolean truthy or 
 # --------------------- #
 
 function _de_usage() {
-  cat <<EOF
+  cat << EOF
 Adds directory stacking, ls after cd, and fuzzy finding behavior to cd.
 
-Usage: ${FUNCNAME[1]} [-L/-P [-e]] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+] [PATH]
+Usage: ${FUNCNAME[1]} [-L/-P [-e]] [-h] [-v] [-l] [-s[=][DIRECTORY]/-p[=][0-9]+] [DIRECTORY]
 
 Options:
-	-h, --help			Show this help message and exit.
-	    --version			Show version information and exit.
-	-l, --list-directories		List the current directory stack.
-	-s, --stack-directory		Add the current directory to the top of the directory stack.
-	-p, --pop-directory		Pop the specified directory from the directory stack and change to it.
-	    --purge-directory-stack	Empty the current directory stack.
-	-L				Resolve symlinks during traversal after processing .. in path (Default Behavior).
-	-P				Prevents following symlinks after processing .. in path.
-	-e				Return a non-zero status if working directory resolution fails with -P enabled.
+	-h, --help				Show this help message and exit.
+	    --version				Show version information and exit.
+	-l, --list-directories			List the current directory stack.
+	-s, --stack-directory [DIRECTORY]	Add the current or specified directory to the top of the directory stack.
+	-p, --pop-directory [0-9]+		Pop the top or specified directory from the directory stack and change to it.
+	    --purge-directory-stack		Empty the current directory stack.
+	-L					Resolve symlinks during traversal after processing .. in path (Default Behavior).
+	-P					Prevents following symlinks after processing .. in path.
+	-e					Return a non-zero status if working directory resolution fails with -P enabled.
 EOF
 }
 
 function _de_version() {
-  cat <<EOF
+  cat << EOF
 Directory Explorer 0.1.0
 Copyright © 2026 Josh Beale <jbeale2023@gmail.com>.
 Licence MIT: <https://directory.fsf.org/wiki/License:Expat>
@@ -75,12 +75,12 @@ function _de_list-directories() {
     STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
     [ "$STACK_SIZE" -ge 1 ] || { echo "The directory stack is empty." && return 0; }
     case "$STACK_SIZE" in
-    1)
-      echo "There is currently $STACK_SIZE directory on the stack."
-      ;;
-    *)
-      echo "There are currently $STACK_SIZE directories on the stack."
-      ;;
+      1)
+        echo "There is currently $STACK_SIZE directory on the stack."
+        ;;
+      *)
+        echo "There are currently $STACK_SIZE directories on the stack."
+        ;;
     esac
     tac "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | head -n "${_de_STACK_DISPLAY_LIMIT:-5}" | cat -n
   else
@@ -91,7 +91,7 @@ function _de_list-directories() {
 # Add a directory to the stack.
 # Defaults to $PWD if no directory is provided.
 function _de_stack-directory() {
-  realpath "${1:-"$PWD"}" >>"${_de_USER_DIRSTACK:-$HOME/.dirstack}"
+  realpath "${1:-"$PWD"}" >> "${_de_USER_DIRSTACK:-$HOME/.dirstack}"
   echo "Added ${1:-"$PWD"} to the stack."
   declare -i STACK_SIZE
   STACK_SIZE=$(wc -l "${_de_USER_DIRSTACK:-$HOME/.dirstack}" | cut -f 1 -d " ")
@@ -149,7 +149,7 @@ function _de_directory-explorer() {
   if [ "$TARGET_PATH" == "--" ]; then
     if [ "${_de_FUZZY_SEARCH_WHEN_BLANK:-true}" ]; then
       declare DIR
-      DIR=$(find / -type d 2>/dev/null | fzf --preview 'tree {}')
+      DIR=$(find / -type d 2> /dev/null | fzf --preview 'tree {}')
       if [ -n "$DIR" ]; then
         cdopts+=("$DIR")
       fi
@@ -167,7 +167,7 @@ function _de_directory-explorer() {
 function de() {
   declare -a cdopts
   if ! OPTS=$(getopt -o hvls::p::LPe --long help,version,list-directories,stack-directory::,pop-directory::,purge-directory-stack -- "$@"); then
-    cat <<EOF
+    cat << EOF
 ${FUNCNAME[0]}: error during argument parsing.
 Do you have GNU getopt?
 EOF
@@ -178,53 +178,53 @@ EOF
 
   while true; do
     case "$1" in
-    -h | --help)
-      _de_usage
-      return "$?"
-      ;;
-    -v | --version)
-      _de_version
-      return "$?"
-      ;;
-    -l | --list-directories)
-      _de_list-directories
-      return "$?"
-      ;;
-    -s | --stack-directory)
-      if [ -d "$2" ]; then
-        _de_stack-directory "$2"
-      else
-        _de_stack-directory
-      fi
-      return "$?"
-      ;;
-    -p | --pop-directory)
-      if [[ $2 =~ [0-9]+ ]]; then
-        _de_pop-directory "$2"
-      else
-        _de_pop-directory
-      fi
-      return "$?"
-      ;;
-    --purge-directory-stack)
-      _de_purge-directory-stack
-      return "$?"
-      ;;
-    -[LPe])
-      cdopts+=("$1")
-      shift
-      ;;
-    --)
-      shift
-      break
-      ;;
-    *)
-      cat <<EOF
+      -h | --help)
+        _de_usage
+        return "$?"
+        ;;
+      -v | --version)
+        _de_version
+        return "$?"
+        ;;
+      -l | --list-directories)
+        _de_list-directories
+        return "$?"
+        ;;
+      -s | --stack-directory)
+        if [ -d "$2" ]; then
+          _de_stack-directory "$2"
+        else
+          _de_stack-directory
+        fi
+        return "$?"
+        ;;
+      -p | --pop-directory)
+        if [[ $2 =~ [0-9]+ ]]; then
+          _de_pop-directory "$2"
+        else
+          _de_pop-directory
+        fi
+        return "$?"
+        ;;
+      --purge-directory-stack)
+        _de_purge-directory-stack
+        return "$?"
+        ;;
+      -[LPe])
+        cdopts+=("$1")
+        shift
+        ;;
+      --)
+        shift
+        break
+        ;;
+      *)
+        cat << EOF
 ${FUNCNAME[0]}: invalid option -- '${1}'
 Try '${FUNCNAME[0]}' --help' for more information.
 EOF
-      return 1
-      ;;
+        return 1
+        ;;
     esac
   done
 
