@@ -166,6 +166,10 @@ function _de_add_bookmark() {
     echo "${FUNCNAME[1]}: No bookmark provided."
     return 1
   }
+  if [[ "$1" =~ .*[=\n].* ]]; then
+    echo -E "${FUNCNAME[1]}: Bookmark cannot contain the following characters: '=' or '\n'."
+    return 1
+  fi
   [[ -d "${2:-"$PWD"}" ]] || {
     echo "${FUNCNAME[1]}: ${2:-"$PWD"} is not a directory."
     return 1
