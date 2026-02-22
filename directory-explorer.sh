@@ -182,7 +182,7 @@ function _de_add_bookmark() {
     return 1
   fi
   echo "$1=$(realpath "${2:-"$PWD"}")" >> "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}"
-  echo "Added Bookmark ${1:-"$PWD"} for ${2:-"$PWD"}."
+  echo "Added Bookmark $1 for ${2:-"$PWD"}."
   declare -i NUM_BOOKMARKS
   NUM_BOOKMARKS=$(wc -l "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}" | cut -f 1 -d " ")
   case "$NUM_BOOKMARKS" in
