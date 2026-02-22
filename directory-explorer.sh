@@ -160,7 +160,6 @@ function _de_parse_bookmark() {
 # Add a bookmark for a directory.
 # Defaults to $PWD if no directory is provided.
 # Doesn't clobber existing bookmarks unless _de_CLOBBER_BOOKMARKS is true.
-# TODO: Add logic around clobbering / not clobbering bookmarks.
 function _de_add_bookmark() {
   [ -n "$1" ] || {
     echo "${FUNCNAME[1]}: No bookmark provided."
@@ -174,6 +173,14 @@ function _de_add_bookmark() {
     echo "${FUNCNAME[1]}: ${2:-"$PWD"} is not a directory."
     return 1
   }
+  grep -q "$1" "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}" && if [[ "$_de_CLOBBER_BOOKMARKS" ]]; then
+    declare -a REPLACED_BOOKMARK
+    mapfile -t REPLACED_BOOKMARK < <(_de_parse_bookmark "$(sed -i -e "/$1=.*\n/w /dev/stdout" -e "s/$1=.*\n/$1=${2:-"$PWD"}/g" "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}")")
+    echo "Replaced bookmark: ${REPLACED_BOOKMARK[0]} for ${REPLACED_BOOKMARK[1]} with ${2:-"$PWD"}."
+  else
+    echo "${FUNCNAME[1]}: Bookmark $1 exists and bookmark clobbering is disabled."
+    return 1
+  fi
   echo "$1=$(realpath "${2:-"$PWD"}")" >> "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}"
   echo "Added Bookmark ${1:-"$PWD"} for ${2:-"$PWD"}."
   declare -i NUM_BOOKMARKS
