@@ -221,6 +221,24 @@ function _de_remove_bookmark() {
   fi
 }
 
+# If there are bookmarks, remove them all.
+function _de_purge_bookmarks() {
+  if [ -f "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}" ]; then
+    declare -i STACK_SIZE
+    NUM_BOOKMARKS=$(wc -l "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}" | cut -f 1 -d " ")
+    case "$NUM_BOOKMARKS" in
+      0)
+        echo "You currently have no bookmarks."
+        return 0
+        ;;
+      1) echo "Purging $NUM_BOOKMARKS bookmark." ;;
+      *) echo "Purging $NUM_BOOKMARKS bookmarks." ;;
+    esac
+    rm "${_de_USER_BOOKMARKS:-$HOME/.de_bookmarks}"
+  fi
+
+}
+
 # Main function for changing to a given target path.
 # If $_de_FUZZY_SEARCH_WHEN_BLANK is enabled, launches fzf with tree preview if no path is provided.
 function _de_directory-explorer() {
